@@ -1,5 +1,7 @@
 package repository
 
+import "github.com/jinzhu/gorm"
+
 type Authorization interface {
 }
 
@@ -15,6 +17,6 @@ type Repository struct {
 	TodoItem
 }
 
-func NewRepository() *Repository {
+func NewRepository(db *gorm.DB) *Repository {
 	return &Repository{}
 }

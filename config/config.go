@@ -7,6 +7,14 @@ import (
 )
 
 type Config struct {
+	Database struct {
+		Host     string `yaml:"host"`
+		Port     string `yaml:"port"`
+		User     string `yaml:"user"`
+		Dbname   string `yaml:"dbname"`
+		Password string `yaml:"password"`
+		SSLMode  string `yaml:"SSLMode"`
+	} `yaml:"database"`
 	Server struct {
 		Host string `yaml:"host"`
 		Port string `yaml:"port"`

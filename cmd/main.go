@@ -10,11 +10,17 @@ import (
 )
 
 func main() {
-	repos := repository.NewRepository()
+	cfg := config.GetConfig()
+
+	db, err := repository.NewPostgresDB(cfg)
+	if err != nil {
+		log.Fatalf("error connection db, %s", err)
+	}
+	log.Println("DB connection successful")
+
+	repos := repository.NewRepository(db)
 	services := service.NewService(repos)
 	handlers := handler.NewHandler(services)
-
-	cfg := config.GetConfig()
 
 	server := new(todo.Server)
 	if err := server.Run(cfg, handlers.InitRoutes()); err != nil {
