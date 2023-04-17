@@ -2,7 +2,7 @@ package config
 
 import (
 	"github.com/ilyakaznacheev/cleanenv"
-	"log"
+	"github.com/sirupsen/logrus"
 	"sync"
 )
 
@@ -26,13 +26,13 @@ var once sync.Once
 
 func GetConfig() *Config {
 	once.Do(func() {
-		log.Print("gather config")
+		logrus.Print("gather config")
 		instance = &Config{}
 		if err := cleanenv.ReadConfig("config.yaml", instance); err != nil {
 			text := "Error reading configuration"
 			help, _ := cleanenv.GetDescription(instance, &text)
-			log.Println(help)
-			log.Fatal(err)
+			logrus.Println(help)
+			logrus.Fatal(err)
 		}
 	})
 	return instance
