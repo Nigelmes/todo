@@ -14,8 +14,8 @@ func NewAuthPostgres(db *gorm.DB) *AuthPostgres {
 }
 
 func (a *AuthPostgres) CreateUser(user todo.User) (int, error) {
-	if err := a.db.Create(user).Table(userTable).Error; err != nil {
+	if err := a.db.Table(userTable).Create(&user).Error; err != nil {
 		return -1, err
 	}
-	return 777, nil
+	return user.Id, nil
 }
