@@ -2,11 +2,16 @@ package service
 
 import (
 	"crypto/sha1"
+	"errors"
 	"fmt"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/nigelmes/todo"
 	"github.com/nigelmes/todo/pkg/repository"
 	"time"
+)
+
+const (
+	signigkey = "sgr^&&fdr(334#Fdfse5644ddd"
 )
 
 type tokenClaims struct {
@@ -41,7 +46,26 @@ func (a *AuthService) GenerateToken(username, password string) (string, error) {
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
-	return token.SignedString([]byte("sgr^&&fdr(334#F"))
+	return token.SignedString([]byte(signigkey))
+}
+
+func (a *AuthService) ParseToken(accessToken string) (int, error) {
+	token, err := jwt.ParseWithClaims(accessToken, &tokenClaims{}, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, errors.New("invalid signing method")
+		}
+		return []byte(signigkey), nil
+	})
+
+	if err != nil {
+		return 0, err
+	}
+
+	claims, ok := token.Claims.(*tokenClaims)
+	if !ok {
+		return 0, errors.New("token claims are not of type *tokenClaims")
+	}
+	return claims.UserId, nil
 }
 
 func generatePasswordHash(password string) string {
