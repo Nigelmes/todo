@@ -19,3 +19,9 @@ func (a *AuthPostgres) CreateUser(user todo.User) (int, error) {
 	}
 	return user.Id, nil
 }
+
+func (a *AuthPostgres) GetUser(username, password string) (todo.User, error) {
+	var user todo.User
+	err := a.db.Table(userTable).Where("username = ? AND password_hash = ?", username, password).Find(&user).Error
+	return user, err
+}
