@@ -1,15 +1,15 @@
 package todo
 
 type TodoList struct {
-	Id          int    `json:"id"`
-	Title       string `json:"title"`
-	Description string `json:"description"`
+	Id          int    `json:"id"  gorm:"column:id"`
+	Title       string `json:"title" gorm:"column:title""`
+	Description string `json:"description" gorm:"column:description"`
 }
 
 type UserList struct {
-	Id     int
-	UserId int
-	ListId int
+	Id     int `gorm:"column:id"`
+	UserId int `gorm:"column:user_id"`
+	ListId int `gorm:"column:list_id"`
 }
 
 type TodoItem struct {
