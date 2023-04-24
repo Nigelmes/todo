@@ -47,3 +47,12 @@ func (t *TodoListPostgres) GetAll(userId int) ([]todo.TodoList, error) {
 
 	return lists, err
 }
+
+func (t *TodoListPostgres) GetById(userId, listId int) (todo.TodoList, error) {
+	var list todo.TodoList
+	err := t.db.Table(todoListTable).Joins("INNER JOIN user_lists ON todo_lists.id = user_lists.list_id").
+		Where("user_lists.user_id = ? AND user_lists.list_id = ?", userId, listId).
+		Find(&list).Error
+
+	return list, err
+}

@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/nigelmes/todo"
 	"net/http"
+	"strconv"
 )
 
 func (h *Handler) creatList(c *gin.Context) {
@@ -45,7 +46,23 @@ func (h *Handler) getAllList(c *gin.Context) {
 }
 
 func (h *Handler) getListbyId(c *gin.Context) {
+	Userid, err := getUserId(c)
+	if err != nil {
+		return
+	}
 
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		newErrorResponce(c, http.StatusBadRequest, "invalid id param")
+		return
+	}
+
+	list, err := h.services.TodoList.GetById(Userid, id)
+	if err != nil {
+		newErrorResponce(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+	c.JSON(http.StatusOK, list)
 }
 
 func (h *Handler) updateList(c *gin.Context) {
