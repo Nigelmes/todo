@@ -2,7 +2,7 @@ package todo
 
 type TodoList struct {
 	Id          int    `json:"id"  gorm:"column:id"`
-	Title       string `json:"title" gorm:"column:title""`
+	Title       string `json:"title" gorm:"column:title"`
 	Description string `json:"description" gorm:"column:description"`
 }
 

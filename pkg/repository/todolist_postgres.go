@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"fmt"
 	"github.com/jinzhu/gorm"
 	"github.com/nigelmes/todo"
 )
@@ -55,4 +56,21 @@ func (t *TodoListPostgres) GetById(userId, listId int) (todo.TodoList, error) {
 		Find(&list).Error
 
 	return list, err
+}
+
+func (t *TodoListPostgres) Delete(userId, listId int) error {
+	var todoList todo.TodoList
+	if err := t.db.Where("id = ?", listId).First(&todoList).Error; err != nil {
+		return fmt.Errorf("failed to find list with id %d: %w", listId, err)
+	}
+	tx := t.db.Begin()
+	if err := tx.Where("user_id = ? AND list_id = ?", userId, listId).Delete(&todo.UserList{}).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+	if err := tx.Where("id = ?", listId).Delete(&todo.TodoList{}).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+	return tx.Commit().Error
 }
