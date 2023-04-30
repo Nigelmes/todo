@@ -74,3 +74,12 @@ func (t *TodoListPostgres) Delete(userId, listId int) error {
 	}
 	return tx.Commit().Error
 }
+
+func (t *TodoListPostgres) Update(userId, listId int, input todo.TodoList) error {
+	list, err := t.GetById(userId, listId)
+	if err != nil {
+		return err
+	}
+	err = t.db.Model(&list).Update(input).Error
+	return err
+}

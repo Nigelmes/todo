@@ -1,6 +1,7 @@
 package service
 
 import (
+	"errors"
 	"github.com/nigelmes/todo"
 	"github.com/nigelmes/todo/pkg/repository"
 )
@@ -27,4 +28,18 @@ func (t *TodoListService) GetById(userId, listId int) (todo.TodoList, error) {
 
 func (t *TodoListService) Delete(userId, listId int) error {
 	return t.repo.Delete(userId, listId)
+}
+
+func (t *TodoListService) Update(userId, listId int, input todo.TodoList) error {
+	if err := validateupdatelist(input); err != nil {
+		return err
+	}
+	return t.repo.Update(userId, listId, input)
+}
+
+func validateupdatelist(input todo.TodoList) error {
+	if input.Title == "" && input.Description == "" {
+		return errors.New("validation error")
+	}
+	return nil
 }
