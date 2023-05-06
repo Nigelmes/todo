@@ -12,9 +12,8 @@ func (h *Handler) creatList(c *gin.Context) {
 	if err != nil {
 		return
 	}
-
 	var input todo.TodoList
-	if err := c.BindJSON(&input); err != nil {
+	if err = c.BindJSON(&input); err != nil {
 		newErrorResponce(c, http.StatusBadRequest, err.Error())
 		return
 	}

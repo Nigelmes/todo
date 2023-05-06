@@ -11,7 +11,7 @@ const (
 	userTable      = "users"
 	todoListTable  = "todo_lists"
 	usersListTable = "user_lists"
-	todoItemTable  = "todo_item"
+	todoItemTable  = "todo_items"
 	listItemTable  = "lists_item "
 )
 

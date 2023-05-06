@@ -13,14 +13,14 @@ type UserList struct {
 }
 
 type TodoItem struct {
-	Id          int    `json:"id"`
-	Title       string `json:"title"`
-	Description string `json:"description"`
-	Done        bool   `json:"done"`
+	Id          int    `json:"-" gorm:"column:id"`
+	Title       string `json:"title" gorm:"column:title"`
+	Description string `json:"description" gorm:"column:description"`
+	Done        bool   `json:"done" gorm:"column:done"`
 }
 
 type ListsItem struct {
-	Id     int
-	ListId int
-	itemId int
+	Id     int `gorm:"column:id"`
+	ListId int `gorm:"column:list_id"`
+	ItemId int `gorm:"column:item_id"`
 }
