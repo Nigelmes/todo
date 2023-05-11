@@ -62,7 +62,7 @@ func (h *Handler) getItembyId(c *gin.Context) {
 	}
 	itemId, err := strconv.Atoi(c.Param("item_id"))
 	if err != nil {
-		newErrorResponce(c, http.StatusBadRequest, err.Error())
+		newErrorResponce(c, http.StatusBadRequest, "invalid item_id param")
 		return
 	}
 	item, err := h.services.TodoItem.GetById(Userid, itemId)
@@ -74,9 +74,44 @@ func (h *Handler) getItembyId(c *gin.Context) {
 }
 
 func (h *Handler) updateItem(c *gin.Context) {
-
+	Userid, err := getUserId(c)
+	if err != nil {
+		return
+	}
+	id, err := strconv.Atoi(c.Param("item_id"))
+	if err != nil {
+		newErrorResponce(c, http.StatusBadRequest, "invalid item_id param")
+		return
+	}
+	var input todo.TodoItem
+	if err = c.ShouldBindJSON(&input); err != nil {
+		newErrorResponce(c, http.StatusBadRequest, err.Error())
+		return
+	}
+	err = h.services.TodoItem.Update(Userid, id, input)
+	if err != nil {
+		newErrorResponce(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"Status": "ok"})
 }
 
 func (h *Handler) deleteItem(c *gin.Context) {
+	Userid, err := getUserId(c)
+	if err != nil {
+		return
+	}
 
+	item_id, err := strconv.Atoi(c.Param("item_id"))
+	if err != nil {
+		newErrorResponce(c, http.StatusBadRequest, "invalid item_id param")
+		return
+	}
+
+	err = h.services.TodoItem.Delete(Userid, item_id)
+	if err != nil {
+		newErrorResponce(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"Status": "ok"})
 }

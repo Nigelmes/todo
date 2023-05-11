@@ -59,6 +59,10 @@ func (t *TodoListPostgres) GetById(userId, listId int) (todo.TodoList, error) {
 }
 
 func (t *TodoListPostgres) Delete(userId, listId int) error {
+	list, err := t.GetById(userId, listId)
+	if err != nil {
+		return err
+	}
 	var todoList todo.TodoList
 	if err := t.db.Where("id = ?", listId).First(&todoList).Error; err != nil {
 		return fmt.Errorf("failed to find list with id %d: %w", listId, err)
@@ -68,7 +72,7 @@ func (t *TodoListPostgres) Delete(userId, listId int) error {
 		tx.Rollback()
 		return err
 	}
-	if err := tx.Where("id = ?", listId).Delete(&todo.TodoList{}).Error; err != nil {
+	if err := tx.Table(todoListTable).Delete(&list).Error; err != nil {
 		tx.Rollback()
 		return err
 	}
