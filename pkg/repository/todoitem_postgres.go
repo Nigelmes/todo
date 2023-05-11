@@ -44,3 +44,12 @@ func (t *TodoItemPostgres) GetAll(userId, listId int) ([]todo.TodoItem, error) {
 		" AND user_lists.user_id = ?", listId, userId).Find(&items).Error
 	return items, err
 }
+
+func (t *TodoItemPostgres) GetById(userId, itemId int) (todo.TodoItem, error) {
+	var item todo.TodoItem
+
+	err := t.db.Table(todoItemTable).Joins("inner join lists_item on lists_item.item_id = todo_items.id").Joins(
+		"inner join user_lists on user_lists.list_id = lists_item.list_id").Where("lists_item.item_id = ?"+
+		" AND user_lists.user_id = ?", itemId, userId).First(&item).Error
+	return item, err
+}

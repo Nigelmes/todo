@@ -56,7 +56,21 @@ func (h *Handler) getAllItem(c *gin.Context) {
 }
 
 func (h *Handler) getItembyId(c *gin.Context) {
-
+	Userid, err := getUserId(c)
+	if err != nil {
+		return
+	}
+	itemId, err := strconv.Atoi(c.Param("item_id"))
+	if err != nil {
+		newErrorResponce(c, http.StatusBadRequest, err.Error())
+		return
+	}
+	item, err := h.services.TodoItem.GetById(Userid, itemId)
+	if err != nil {
+		newErrorResponce(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+	c.JSON(http.StatusOK, item)
 }
 
 func (h *Handler) updateItem(c *gin.Context) {
