@@ -1,0 +1,27 @@
+services:
+  todo:
+    container_name: todo-golang
+    build: ./
+    command: ./wait-postgres.sh db ./todo-app
+    ports:
+      - 80:8080
+    environment:
+      - DB_PASSWORD=postgres
+    depends_on:
+      - postgresql-db
+
+  postgresql-db:
+    container_name: postgres-todo-golang
+    restart: on-failure
+    image: postgres:latest
+    volumes:
+      - postgres_todo:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: todo
+    ports:
+      - 5432:5432
+
+volumes:
+  postgres_todo:
